@@ -1,4 +1,4 @@
-package engine.gfx;
+package engine.gfx.api;
 
 import engine.math.Vector3f;
 

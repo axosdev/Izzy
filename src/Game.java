@@ -1,24 +1,31 @@
-import engine.gfx.Camera;
-import engine.gfx.RenderUtil;
-import engine.gfx.Texture;
-import engine.gfx.Window;
+import engine.gfx.api.*;
 import engine.gfx.lights.*;
 import engine.gfx.mesh.Material;
 import engine.gfx.mesh.Mesh;
 import engine.gfx.mesh.Vertex;
+import engine.gfx.shader.BasicShader;
 import engine.gfx.shader.PhongShader;
 import engine.gfx.shader.Shader;
 import engine.math.Transform;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.util.Time;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL11.glClear;
 
 public class Game {
     private Mesh mesh;
     private Shader shader;
     private Material material;
+    private Texture tex;
     private Transform transform;
     private Camera camera;
+
+    private FrameBuffer fbo;
+    private Material fboMat;
+    private Shader fboShader;
 
     PointLight pLight1 = new PointLight(new BaseLight(new Vector3f(1, 0.7f, 0), 0.8f), new Attenuation(0, 0, 1), new Vector3f(-2, 0, 5f), 10);
     PointLight pLight2 = new PointLight(new BaseLight(new Vector3f(0, 0.5f, 1), 0.8f), new Attenuation(0, 0, 1), new Vector3f(2, 0, 7f), 10);
@@ -27,9 +34,15 @@ public class Game {
             new Vector3f(1, 1, 1), 0.7f);
 
     public Game() {
-        material = new Material(new Texture("test.png"), new Vector3f(1, 1, 1), 1, 8);
+        tex = new Texture("test.png");
+        fboMat = new Material(tex, new Vector3f(1, 1, 1), -1, -1);
+        material = new Material(tex, new Vector3f(1, 1, 1), 1, 8);
         float fieldDepth = 10.0f;
         float fieldWidth = 10.0f;
+
+        try {
+            fbo = new FrameBuffer(new Texture("test.png"));
+        } catch(LWJGLException e) {e.printStackTrace();}
 
         Vertex[] vertices = new Vertex[]{new Vertex(new Vector3f(-fieldWidth, 0.0f, -fieldDepth), new Vector2f(0.0f, 0.0f)),
                 new Vertex(new Vector3f(-fieldWidth, 0.0f, fieldDepth * 3), new Vector2f(0.0f, 1.0f)),
@@ -41,6 +54,7 @@ public class Game {
 
         mesh = new Mesh(vertices, indices, true);
         shader = PhongShader.getInstance();
+        fboShader = BasicShader.getInstance();
         camera = new Camera();
         transform = new Transform();
 
@@ -77,9 +91,23 @@ public class Game {
     }
 
     public void render() {
-        RenderUtil.setClearColor(Transform.getCamera().getPos().div(2048f).abs());
+        RenderUtil.setClearColor(new Vector3f(0, 0.5f, 0.5f));
+
+        fbo.begin();
+
+        glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
         shader.bind();
         shader.updateUniforms(transform.getTransformation(), transform.getProjectedTransformation(), material);
+        mesh.draw();
+
+        fbo.end();
+
+        fboMat.setTexture(fbo.getTexture());
+
+        fboShader.bind();
+        fboShader.updateUniforms(transform.getTransformation(), transform.getProjectedTransformation(), fboMat);
+
         mesh.draw();
     }
 }

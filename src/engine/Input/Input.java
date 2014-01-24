@@ -1,4 +1,4 @@
-package engine.Input;
+package engine.input;
 
 import engine.math.Vector2f;
 import org.lwjgl.input.Keyboard;

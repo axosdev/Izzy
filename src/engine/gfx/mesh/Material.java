@@ -1,6 +1,6 @@
 package engine.gfx.mesh;
 
-import engine.gfx.Texture;
+import engine.gfx.api.Texture;
 import engine.math.Vector3f;
 
 public class Material {

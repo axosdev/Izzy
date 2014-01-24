@@ -1,6 +1,6 @@
 package engine.gfx.shader;
 
-import engine.gfx.RenderUtil;
+import engine.gfx.api.RenderUtil;
 import engine.gfx.lights.BaseLight;
 import engine.gfx.lights.DirectionalLight;
 import engine.gfx.lights.PointLight;

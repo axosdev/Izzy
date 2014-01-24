@@ -1,4 +1,4 @@
-package engine.gfx;
+package engine.gfx.api;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;

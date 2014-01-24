@@ -1,6 +1,6 @@
 package engine.gfx.shader;
 
-import engine.gfx.RenderUtil;
+import engine.gfx.api.RenderUtil;
 import engine.gfx.mesh.Material;
 import engine.math.Matrix4f;
 

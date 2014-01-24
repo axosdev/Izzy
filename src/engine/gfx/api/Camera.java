@@ -1,6 +1,6 @@
-package engine.gfx;
+package engine.gfx.api;
 
-import engine.Input.Input;
+import engine.input.Input;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.util.Time;

@@ -1,4 +1,4 @@
-package engine.gfx;
+package engine.gfx.api;
 
 import org.newdawn.slick.opengl.TextureLoader;
 

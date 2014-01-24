@@ -1,6 +1,6 @@
 package engine.math;
 
-import engine.gfx.Camera;
+import engine.gfx.api.Camera;
 
 public class Transform {
     private static Camera camera;
