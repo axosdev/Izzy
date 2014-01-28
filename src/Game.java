@@ -6,6 +6,7 @@ import engine.gfx.mesh.Vertex;
 import engine.gfx.shader.BlurShader;
 import engine.gfx.shader.PhongShader;
 import engine.gfx.shader.Shader;
+import engine.input.Input;
 import engine.math.Transform;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
@@ -24,7 +25,6 @@ public class Game {
     private Transform transform;
     private Camera camera;
 
-    private Camera uiCamera;
     private Transform uiTransform;
     private FrameBuffer fbo;
     private FrameBuffer fboA;
@@ -46,8 +46,8 @@ public class Game {
         float fieldWidth = 10.0f;
 
         try {
-            fbo = new FrameBuffer(new Texture("test.png"));
-            fboA = new FrameBuffer(new Texture("test.png"));
+            fbo = new FrameBuffer(Window.getWidth(), Window.getHeight());
+            fboA = new FrameBuffer(Window.getWidth(), Window.getHeight());
         } catch(LWJGLException e) {e.printStackTrace();}
 
         Vertex[] vertices = new Vertex[]{new Vertex(new Vector3f(-fieldWidth, 0.0f, -fieldDepth), new Vector2f(0.0f, 0.0f)),
@@ -70,7 +70,6 @@ public class Game {
         shader = PhongShader.getInstance();
         fboShader = BlurShader.getInstance();
         camera = new Camera();
-        uiCamera = new Camera();
         transform = new Transform();
         uiTransform = new Transform();
 
@@ -89,9 +88,24 @@ public class Game {
     }
 
     float temp = 0.0f;
+    float radius = 1.0f;
 
     public void update() {
         temp += Time.getDelta();
+
+        if(Input.getKey(Input.KEY_UP)) {
+            radius += 0.001f;
+
+            if(radius > 100) radius = 100;
+        }
+
+        if(Input.getKey(Input.KEY_DOWN)) {
+            radius -= 0.001f;
+
+            if(radius < 0) radius = 0;
+        }
+
+        BlurShader.getInstance().setRadius(radius);
 
         float sinTemp = (float) Math.sin(temp);
 

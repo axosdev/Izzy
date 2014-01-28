@@ -9,6 +9,10 @@ public class FrameBuffer {
     private int id;
     private Texture texture;
 
+    public FrameBuffer(int width, int height) throws LWJGLException {
+        this(new Texture(width, height));
+    }
+
     public FrameBuffer(Texture texture) throws LWJGLException {
         this.texture = texture;
 

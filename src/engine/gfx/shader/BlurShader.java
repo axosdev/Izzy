@@ -12,6 +12,10 @@ public class BlurShader extends Shader {
         return instance;
     }
 
+    public float radius = 4f;
+    public float resolution = 1024;
+    public Vector2f dir = new Vector2f(1, 0);
+
     private BlurShader() {
         super();
 
@@ -35,12 +39,20 @@ public class BlurShader extends Shader {
         setUniform("transform", projectedMatrix);
         setUniform("color", material.getColor());
 
-        setUniformf("resolution", 1024);
-        setUniform2f("dir", new Vector2f(1, 0));
-        setUniformf("radius", 3f);
+        setUniformf("resolution", resolution);
+        setUniform2f("dir", dir);
+        setUniformf("radius", radius);
     }
 
     public void setDir(Vector2f dir) {
-        setUniform2f("dir", dir);
+        this.dir = dir;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
+
+    public void setResolution(float resolution) {
+        this.resolution = resolution;
     }
 }
