@@ -3,7 +3,7 @@ import engine.gfx.lights.*;
 import engine.gfx.mesh.Material;
 import engine.gfx.mesh.Mesh;
 import engine.gfx.mesh.Vertex;
-import engine.gfx.shader.InvertShader;
+import engine.gfx.shader.BlurShader;
 import engine.gfx.shader.PhongShader;
 import engine.gfx.shader.Shader;
 import engine.math.Transform;
@@ -27,6 +27,7 @@ public class Game {
     private Camera uiCamera;
     private Transform uiTransform;
     private FrameBuffer fbo;
+    private FrameBuffer fboA;
     private Mesh fboMesh;
     private Material fboMat;
     private Shader fboShader;
@@ -46,6 +47,7 @@ public class Game {
 
         try {
             fbo = new FrameBuffer(new Texture("test.png"));
+            fboA = new FrameBuffer(new Texture("test.png"));
         } catch(LWJGLException e) {e.printStackTrace();}
 
         Vertex[] vertices = new Vertex[]{new Vertex(new Vector3f(-fieldWidth, 0.0f, -fieldDepth), new Vector2f(0.0f, 0.0f)),
@@ -54,16 +56,6 @@ public class Game {
                 new Vertex(new Vector3f(fieldWidth * 3, 0.0f, fieldDepth * 3), new Vector2f(1.0f, 1.0f))};
 
         Vertex[] fboVerts = new Vertex[]{
-//                new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(0.0f, 0.0f)),
-//                new Vertex(new Vector3f(1, 1, 0.0f), new Vector2f(0.0f, 1.0f)),
-//                new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(1.0f, 0.0f)),
-//                new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(1.0f, 1.0f)),
-
-//                new Vertex(new Vector3f(1, 1, 0.0f), new Vector2f(0.0f, 0.0f)),
-//                new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(0.0f, 1.0f)),
-//                new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(1.0f, 0.0f)),
-//                new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(1.0f, 1.0f)),
-
                 new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(0.0f, 0.0f)),
                 new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(0.0f, 1.0f)),
                 new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(1.0f, 0.0f)),
@@ -76,7 +68,7 @@ public class Game {
         mesh = new Mesh(vertices, indices, true);
         fboMesh = new Mesh(fboVerts, indices, true);
         shader = PhongShader.getInstance();
-        fboShader = InvertShader.getInstance();
+        fboShader = BlurShader.getInstance();
         camera = new Camera();
         uiCamera = new Camera();
         transform = new Transform();
@@ -131,8 +123,18 @@ public class Game {
         // Set Camera to render the UI
         camera.flipMode(Camera.CameraMode.UI);
 
+        fboA.begin();
+
         fboMat.setTexture(fbo.getTexture());
 
+        fboShader.bind();
+        fboShader.updateUniforms(uiTransform.getTransformation(), uiTransform.getOrthographicTransformation(), fboMat);
+
+        fboMesh.draw();
+
+        fboA.end();
+
+        ((BlurShader)fboShader).setDir(new Vector2f(0, 1));
         fboShader.bind();
         fboShader.updateUniforms(uiTransform.getTransformation(), uiTransform.getOrthographicTransformation(), fboMat);
 

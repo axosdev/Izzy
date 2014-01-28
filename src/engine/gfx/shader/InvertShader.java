@@ -14,8 +14,8 @@ public class InvertShader extends Shader {
     private InvertShader() {
         super();
 
-        addVertexShaderFromFile("invertVertex.glsl");
-        addFragmentShaderFromFile("invertFragment.glsl");
+        addVertexShaderFromFile("InvertVertex.glsl");
+        addFragmentShaderFromFile("InvertFragment.glsl");
         compileShader();
 
         addUniform("transform");

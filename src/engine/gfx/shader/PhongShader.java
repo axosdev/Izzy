@@ -30,8 +30,8 @@ public class PhongShader extends Shader {
     {
         super();
 
-        addVertexShaderFromFile("phongVertex.vs");
-        addFragmentShaderFromFile("phongFragment.fs");
+        addVertexShaderFromFile("PhongVertex.glsl");
+        addFragmentShaderFromFile("PhongFragment.glsl");
         compileShader();
 
         addUniform("transform");

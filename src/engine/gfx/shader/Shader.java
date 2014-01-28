@@ -2,6 +2,7 @@ package engine.gfx.shader;
 
 import engine.gfx.mesh.Material;
 import engine.math.Matrix4f;
+import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.util.Util;
 
@@ -134,6 +135,10 @@ public class Shader {
 
     public void setUniformf(String uniformName, float value) {
         glUniform1f(uniforms.get(uniformName), value);
+    }
+
+    public void setUniform2f(String uniformName, Vector2f value) {
+        glUniform2f(uniforms.get(uniformName), value.getX(), value.getY());
     }
 
     public void setUniform(String uniformName, Vector3f value) {

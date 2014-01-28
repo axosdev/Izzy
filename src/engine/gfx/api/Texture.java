@@ -32,9 +32,7 @@ public class Texture {
         String ext = splitArray[splitArray.length - 1];
 
         try {
-            int id = TextureLoader.getTexture(ext, new FileInputStream(new File("./res/textures/" + fileName))).getTextureID();
-
-            return id;
+            return TextureLoader.getTexture(ext, new FileInputStream(new File("./res/textures/" + fileName))).getTextureID();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
