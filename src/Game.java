@@ -3,12 +3,13 @@ import engine.gfx.lights.*;
 import engine.gfx.mesh.Material;
 import engine.gfx.mesh.Mesh;
 import engine.gfx.mesh.Vertex;
-import engine.gfx.shader.BasicShader;
+import engine.gfx.shader.InvertShader;
 import engine.gfx.shader.PhongShader;
 import engine.gfx.shader.Shader;
 import engine.math.Transform;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
+import engine.util.Debug;
 import engine.util.Time;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
@@ -23,7 +24,10 @@ public class Game {
     private Transform transform;
     private Camera camera;
 
+    private Camera uiCamera;
+    private Transform uiTransform;
     private FrameBuffer fbo;
+    private Mesh fboMesh;
     private Material fboMat;
     private Shader fboShader;
 
@@ -49,14 +53,34 @@ public class Game {
                 new Vertex(new Vector3f(fieldWidth * 3, 0.0f, -fieldDepth), new Vector2f(1.0f, 0.0f)),
                 new Vertex(new Vector3f(fieldWidth * 3, 0.0f, fieldDepth * 3), new Vector2f(1.0f, 1.0f))};
 
+        Vertex[] fboVerts = new Vertex[]{
+//                new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(0.0f, 0.0f)),
+//                new Vertex(new Vector3f(1, 1, 0.0f), new Vector2f(0.0f, 1.0f)),
+//                new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(1.0f, 0.0f)),
+//                new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(1.0f, 1.0f)),
+
+//                new Vertex(new Vector3f(1, 1, 0.0f), new Vector2f(0.0f, 0.0f)),
+//                new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(0.0f, 1.0f)),
+//                new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(1.0f, 0.0f)),
+//                new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(1.0f, 1.0f)),
+
+                new Vertex(new Vector3f(0, 0, 0.0f), new Vector2f(0.0f, 0.0f)),
+                new Vertex(new Vector3f(0, 1, 0.0f), new Vector2f(0.0f, 1.0f)),
+                new Vertex(new Vector3f(1, 0, 0.0f), new Vector2f(1.0f, 0.0f)),
+                new Vertex(new Vector3f(1, 1, 0.0f), new Vector2f(1.0f, 1.0f)),
+        };
+
         int indices[] = {0, 1, 2,
                 2, 1, 3};
 
         mesh = new Mesh(vertices, indices, true);
+        fboMesh = new Mesh(fboVerts, indices, true);
         shader = PhongShader.getInstance();
-        fboShader = BasicShader.getInstance();
+        fboShader = InvertShader.getInstance();
         camera = new Camera();
+        uiCamera = new Camera();
         transform = new Transform();
+        uiTransform = new Transform();
 
         Transform.setProjection(70f, Window.getWidth(), Window.getHeight(), 0.1f, 1000);
         Transform.setCamera(camera);
@@ -80,6 +104,7 @@ public class Game {
         float sinTemp = (float) Math.sin(temp);
 
         transform.setTranslation(0, -1, 5);
+        uiTransform.setTranslation(0, 0, 0);
         //transform.setRotation(0, sinTemp * 180, 0);
 
         pLight1.setPosition(new Vector3f(3, 0, 8.0f * (float) (Math.sin(temp) + 1.0 / 2.0) + 10));
@@ -103,11 +128,24 @@ public class Game {
 
         fbo.end();
 
+        // Set Camera to render the UI
+        camera.flipMode(Camera.CameraMode.UI);
+
         fboMat.setTexture(fbo.getTexture());
 
         fboShader.bind();
-        fboShader.updateUniforms(transform.getTransformation(), transform.getProjectedTransformation(), fboMat);
+        fboShader.updateUniforms(uiTransform.getTransformation(), uiTransform.getOrthographicTransformation(), fboMat);
 
-        mesh.draw();
+        fboMesh.draw();
+
+        // Reset camera to world view
+        camera.flipMode(Camera.CameraMode.WORLD);
+
+        if(Mesh.oldDrawCalls != Mesh.drawCalls) {
+            Debug.log("Draw Calls:" + Mesh.drawCalls);
+            Mesh.oldDrawCalls = Mesh.drawCalls;
+        }
+
+        Mesh.drawCalls = 0;
     }
 }

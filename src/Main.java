@@ -1,6 +1,6 @@
-import engine.input.Input;
 import engine.gfx.api.RenderUtil;
 import engine.gfx.api.Window;
+import engine.input.Input;
 import engine.util.Time;
 
 public class Main {
@@ -14,7 +14,7 @@ public class Main {
 
     public Main() {
         System.out.println(RenderUtil.getOpenGLVersion());
-        RenderUtil.initGraphics();
+        RenderUtil.initGraphics(false);
         isRunning = false;
         game = new Game();
     }

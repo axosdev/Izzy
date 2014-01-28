@@ -16,6 +16,10 @@ public class Vector3f {
         this(0, 0, 0);
     }
 
+    public Vector3f(Vector3f other) {
+        this(other.getX(), other.getY(), other.getZ());
+    }
+
     public Vector3f(float x, float y, float z) {
         this.x = x;
         this.y = y;

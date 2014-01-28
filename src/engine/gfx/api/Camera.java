@@ -6,11 +6,20 @@ import engine.math.Vector3f;
 import engine.util.Time;
 
 public class Camera {
+    public static enum CameraMode {
+        WORLD,
+        UI
+    }
+
     public static final Vector3f yAxis = new Vector3f(0, 1, 0);
 
     private Vector3f pos;
     private Vector3f forward;
     private Vector3f up;
+
+    private Vector3f tPos;
+    private Vector3f tForward;
+    private Vector3f tUp;
 
     public Camera() {
         this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
@@ -68,6 +77,22 @@ public class Camera {
         }
     }
 
+    public void flipMode(CameraMode cameraMode) {
+        if(cameraMode == CameraMode.UI) {
+            tPos = new Vector3f(pos);
+            tForward = new Vector3f(forward);
+            tUp = new Vector3f(up);
+
+            setPos(0f, 0f, 0f);
+            setForward(Vector3f.FORWARD);
+            setUp(Vector3f.UP);
+        } else if(cameraMode == CameraMode.WORLD) {
+            setPos(tPos);
+            setForward(tForward);
+            setUp(tUp);
+        }
+    }
+
     public void move(Vector3f dir, float amt) {
         pos = pos.add(dir.mul(amt));
     }
@@ -102,6 +127,12 @@ public class Camera {
 
     public void setPos(Vector3f pos) {
         this.pos = pos;
+    }
+
+    public void setPos(float x, float y, float z) {
+        this.pos.setX(x);
+        this.pos.setY(y);
+        this.pos.setZ(z);
     }
 
     public Vector3f getForward() {

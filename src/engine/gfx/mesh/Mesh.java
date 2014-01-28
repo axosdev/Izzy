@@ -13,6 +13,8 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
+    public static int drawCalls = 0; // TODO: This should really be moved to a more appropriate class.
+    public static int oldDrawCalls = 0;
     private int vao;
     private int vbo;
     private int ibo;
@@ -72,6 +74,8 @@ public class Mesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+
+        drawCalls++;
     }
 
     private void calcNormals(Vertex[] vertices, int[] indices) {

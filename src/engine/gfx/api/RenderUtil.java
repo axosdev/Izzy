@@ -1,6 +1,7 @@
 package engine.gfx.api;
 
 import engine.math.Vector3f;
+import org.lwjgl.opengl.Display;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
@@ -26,7 +27,7 @@ public class RenderUtil {
         glClearColor(color.getX(), color.getY(), color.getZ(), 1.0f);
     }
 
-    public static void initGraphics() {
+    public static void initGraphics(boolean vsync) {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         glFrontFace(GL_CW);
@@ -37,6 +38,8 @@ public class RenderUtil {
         glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
+
+        Display.setVSyncEnabled(vsync);
     }
 
     public static String getOpenGLVersion() {

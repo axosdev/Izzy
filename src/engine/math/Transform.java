@@ -38,6 +38,15 @@ public class Transform {
         return projectionMatrix.mul(cameraRotation.mul(cameraTranslation.mul(transformationMatrix)));
     }
 
+    public Matrix4f getOrthographicTransformation() {
+        Matrix4f transformationMatrix = getTransformation();
+        Matrix4f projectionMatrix = new Matrix4f().initOrthographic(0, 1, 0, 1, zNear, zFar);
+        Matrix4f cameraRotation = new Matrix4f().initCamera(camera.getForward(), camera.getUp());
+        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-camera.getPos().getX(), -camera.getPos().getY(), -camera.getPos().getZ());
+
+        return projectionMatrix.mul(cameraRotation.mul(cameraTranslation.mul(transformationMatrix)));
+    }
+
     public Vector3f getTranslation() {
         return translation;
     }
